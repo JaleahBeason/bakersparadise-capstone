@@ -22,5 +22,6 @@ cd database
 python3 api_data_collection.py
 python3 -m streamlit run streamlit_dashboard.py
 
-Author 
-JaLeah Beason
+
+#Author
+#Ja'Leah Beason
