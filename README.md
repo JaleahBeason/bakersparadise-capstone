@@ -18,6 +18,7 @@ BakersParadise is a recipe analytics system that transforms recipe data into mea
 
 ## How to Run
 ```bash
+cd database
 python3 api_data_collection.py
 python3 -m streamlit run streamlit_dashboard.py
 
