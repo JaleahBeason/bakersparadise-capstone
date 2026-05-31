@@ -1,4 +1,4 @@
-# BakersParadise 🧁
+# BakersParadise 
 
 BakersParadise is a recipe analytics system that transforms recipe data into meaningful insights.
 
