@@ -266,7 +266,7 @@ elif page == "My Saved Recipes":
             st.write("You haven't saved any recipes yet.")
         else:
             for recipe_id, name, category, ingredient_count, total_time in saved:
-                col1, col2, col3 = st.columns([3, 2, 1])
+                col1, col2, col3 = st.columns([3, 2, 1.3])
                 col1.write(f"**{name}** ({category})")
                 col2.write(f"{ingredient_count} ingredients, {total_time} min")
                 if col3.button("Remove", key=f"remove_{recipe_id}"):
