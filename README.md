@@ -1,5 +1,7 @@
 # BakersParadise
 
+**[Live demo](https://bakersparadise-capstone-j5tydpwqujx9xjvysuegff.streamlit.app/)**
+
 Most recipe sites hand you a huge list of results and leave you to figure out the rest. BakersParadise pulls recipe data from a public API, stores it in a real database, and turns it into something more useful: which recipes are actually beginner-friendly, how long they really take, and which ingredients show up most often. It's built for someone who wants to pick a recipe fast, not spend twenty minutes guessing which one won't be a disaster.
 
 ## Features
@@ -9,6 +11,7 @@ Most recipe sites hand you a huge list of results and leave you to figure out th
 - Buckets recipes by complexity (Low, Medium, High) and by prep time (Quick, Medium, Long)
 - Tracks ingredient frequency across the whole dataset
 - Two-page Streamlit dashboard: an analytics view for browsing trends, and a recipe explorer for looking at one recipe at a time (image, ingredients, instructions)
+- Save recipes under a name and revisit them later from a dedicated "My Saved Recipes" page
 
 ## Technologies used
 
@@ -27,12 +30,15 @@ python3 -m streamlit run streamlit_dashboard.py
 
 `api_data_collection.py` fetches recipes from the API and saves them to a local SQLite database. `streamlit_dashboard.py` reads from that database and renders the dashboard.
 
-<<<<<<< HEAD
 ## Design
 
 The project is split into four pieces that each do one job: `api_data_collection.py` pulls and parses recipe data from the API, `data_storage.py` writes it to SQLite, `analysis_logic.py` runs the queries (top ingredients, beginner-friendly recipes, complexity, time categories), and `streamlit_dashboard.py` is the only file that touches the UI. Keeping those separate meant each part could be built and tested on its own.
 
 Beginner-friendly and complexity labels come from a simple, explainable rule (ingredient count and prep time), not a machine learning model. That's a deliberate tradeoff: a rule I can explain in one sentence is something a user can sanity-check for themselves, even if it's less accurate than a more advanced model would be. Prep time itself is estimated with a formula based on ingredient count, not measured from real cooking, and the app is upfront about that so users aren't misled by a number that's really a guess.
+
+## Save and revisit recipes
+
+Anyone can enter a name in the sidebar and save recipes to come back to later, no account or password required. Saves are tied to that name in a `saved_recipes` table linked back to the main recipe data, with a dedicated "My Saved Recipes" page to view and remove them. It's a deliberately lightweight version of accounts: enough to make the app feel personal without the overhead of real authentication.
 
 A full product write-up, including the tradeoffs, risks, success metrics, and roadmap, is available as part of my portfolio.
 
