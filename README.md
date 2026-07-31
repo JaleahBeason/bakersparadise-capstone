@@ -27,6 +27,7 @@ python3 -m streamlit run streamlit_dashboard.py
 
 `api_data_collection.py` fetches recipes from the API and saves them to a local SQLite database. `streamlit_dashboard.py` reads from that database and renders the dashboard.
 
+<<<<<<< HEAD
 ## Design
 
 The project is split into four pieces that each do one job: `api_data_collection.py` pulls and parses recipe data from the API, `data_storage.py` writes it to SQLite, `analysis_logic.py` runs the queries (top ingredients, beginner-friendly recipes, complexity, time categories), and `streamlit_dashboard.py` is the only file that touches the UI. Keeping those separate meant each part could be built and tested on its own.
