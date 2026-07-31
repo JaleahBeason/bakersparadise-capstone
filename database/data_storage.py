@@ -3,8 +3,10 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).resolve().parent / "baking_recipes.db"
 
+
 def get_conn():
     return sqlite3.connect(DB_PATH)
+
 
 def init_db():
     conn = get_conn()
@@ -53,8 +55,20 @@ def init_db():
         )
     """)
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS saved_recipes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            saver_name TEXT NOT NULL,
+            recipe_id INTEGER NOT NULL,
+            saved_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (saver_name, recipe_id),
+            FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+        )
+    """)
+
     conn.commit()
     conn.close()
+
 
 def upsert_recipe(recipe):
     conn = get_conn()
@@ -85,11 +99,13 @@ def upsert_recipe(recipe):
 
     conn.commit()
 
-    cur.execute("SELECT id FROM recipes WHERE api_key = ?", (recipe["api_key"],))
+    cur.execute("SELECT id FROM recipes WHERE api_key = ?",
+                (recipe["api_key"],))
     recipe_id = cur.fetchone()[0]
 
     conn.close()
     return recipe_id
+
 
 def upsert_ingredient(name: str) -> int:
     conn = get_conn()
@@ -104,6 +120,7 @@ def upsert_ingredient(name: str) -> int:
     conn.close()
     return ingredient_id
 
+
 def link_recipe_ingredient(recipe_id: int, ingredient_id: int, measure: str):
     conn = get_conn()
     cur = conn.cursor()
@@ -116,6 +133,33 @@ def link_recipe_ingredient(recipe_id: int, ingredient_id: int, measure: str):
     conn.commit()
     conn.close()
 
+
+def save_recipe(saver_name: str, recipe_id: int):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT OR IGNORE INTO saved_recipes (saver_name, recipe_id)
+        VALUES (?, ?)
+    """, (saver_name, recipe_id))
+
+    conn.commit()
+    conn.close()
+
+
+def unsave_recipe(saver_name: str, recipe_id: int):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM saved_recipes
+        WHERE saver_name = ? AND recipe_id = ?
+    """, (saver_name, recipe_id))
+
+    conn.commit()
+    conn.close()
+
+
 if __name__ == "__main__":
     init_db()
     conn = get_conn()
@@ -126,10 +170,10 @@ if __name__ == "__main__":
     for col in cur.fetchall():
         print(col)
 
-    cur.execute("SELECT id, name, total_time_minutes, instructions, thumbnail_url FROM recipes LIMIT 5")
+    cur.execute(
+        "SELECT id, name, total_time_minutes, instructions, thumbnail_url FROM recipes LIMIT 5")
     print("\nRECIPES DATA:")
     for row in cur.fetchall():
         print(row)
 
     conn.close()
-
